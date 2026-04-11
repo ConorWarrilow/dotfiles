@@ -12,7 +12,7 @@
        instance profiles/SSO which populate the env at shell start).
   Fallback in all other cases: prompt once and store locally.
 */ -}}
-{{- $awsAvailable := and (not .isTermux) (ne (env "AWS_ACCESS_KEY_ID") "") -}}
+{{- $awsAvailable := and (not .isTermux) (ne (env "AWS_ACCESS_KEY_ID") "") (ne (env "AWS_SECRET_ACCESS_KEY") "") -}}
 
 # -------------------------------------------------------------------
 # GitHub
@@ -27,9 +27,10 @@ export OPENAI_API_KEY="{{ $secrets.OPENAI_API_KEY }}"
 export ANTHROPIC_API_KEY="{{ $secrets.ANTHROPIC_API_KEY }}"
 {{- end }}
 {{- else }}
-# AWS not configured — token was captured during `chezmoi init` and
-# stored in ~/.config/chezmoi/chezmoi.toml (never committed to the repo).
-export GITHUB_TOKEN="{{ .github_token }}"
+# AWS not configured — secrets left empty until credentials are set up.
+export GITHUB_TOKEN=""
+export OPENAI_API_KEY=""
+export ANTHROPIC_API_KEY=""
 {{- end }}
 
 # -------------------------------------------------------------------
