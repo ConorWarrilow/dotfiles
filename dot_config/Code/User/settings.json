@@ -1,0 +1,60 @@
+{
+    "workbench.activityBar.location": "top",
+    "workbench.colorTheme": "Tokyo Night",
+    "files.autoSave": "afterDelay",
+    "github.copilot.nextEditSuggestions.enabled": false,
+    "terminal.integrated.minimumContrastRatio": 1,
+    "terminal.integrated.lineHeight": 1,
+    "terminal.integrated.customGlyphs": true,
+    "terminal.integrated.gpuAcceleration": "off",
+    "terminal.integrated.cursorStyle": "line",
+    "editor.fontFamily": "'JetBrainsMono Nerd Font Mono', 'RobotoMono Nerd Font Mono', 'FiraCode Nerd Font Mono'",
+    "explorer.fileNesting.patterns": {
+        "*.ts": "${capture}.js",
+        "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+        "*.jsx": "${capture}.js",
+        "*.tsx": "${capture}.ts",
+        "tsconfig.json": "tsconfig.*.json",
+        "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock",
+        "*.sqlite": "${capture}.${extname}-*",
+        "*.db": "${capture}.${extname}-*",
+        "*.sqlite3": "${capture}.${extname}-*",
+        "*.db3": "${capture}.${extname}-*",
+        "*.sdb": "${capture}.${extname}-*",
+        "*.s3db": "${capture}.${extname}-*"
+    },
+    "glassit.alpha": 220,
+    "rust-analyzer.completion.autoimport.enable": true,
+    "rust-analyzer.procMacro.enable": true,
+    "python.languageServer": "Pylance",
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.useLibraryCodeForTypes": true,
+    "python.analysis.reportMissingImports": true,
+    "python.analysis.reportPrivateImportUsage": true,
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportUnusedImport": "warning",
+        "reportUnusedVariable": "warning",
+        "reportOptionalMemberAccess": "warning"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "sqltools.useNodeRuntime": true,
+    "[dockercompose]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "advanced",
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        },
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "[github-actions-workflow]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "editor.largeFileOptimizations": false
+}

@@ -1,0 +1,55 @@
+# -------------------------------------------------------------------
+# External sources managed by chezmoi
+#
+# These are fetched/cloned on `chezmoi apply` and are NOT stored in
+# the dotfiles repo. `refreshPeriod` controls how often chezmoi will
+# re-check for updates (0 = only on first apply / explicit --refresh-externals).
+# -------------------------------------------------------------------
+
+# -------------------------------------------------------------------
+# Zsh plugins (live in ZSH_CUSTOM/plugins, i.e. ~/.config/zsh/custom/plugins/)
+# -------------------------------------------------------------------
+
+[".config/zsh/custom/plugins/zsh-syntax-highlighting"]
+  type          = "git-repo"
+  url           = "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+  refreshPeriod = "168h"  # weekly
+
+[".config/zsh/custom/plugins/zsh-autosuggestions"]
+  type          = "git-repo"
+  url           = "https://github.com/zsh-users/zsh-autosuggestions.git"
+  refreshPeriod = "168h"
+
+[".config/zsh/custom/plugins/zsh-bat"]
+  type          = "git-repo"
+  url           = "https://github.com/fdellwing/zsh-bat.git"
+  refreshPeriod = "168h"
+
+# -------------------------------------------------------------------
+# Tmux Plugin Manager (TPM)
+# Plugins themselves are installed by TPM on first tmux launch via
+# the `run '~/.tmux/plugins/tpm/tpm'` line in .tmux.conf
+# -------------------------------------------------------------------
+
+[".tmux/plugins/tpm"]
+  type          = "git-repo"
+  url           = "https://github.com/tmux-plugins/tpm.git"
+  refreshPeriod = "168h"
+
+# -------------------------------------------------------------------
+# Fonts (fetched as archives — removes the need to commit binary files)
+# refreshPeriod = "8760h" means yearly
+# -------------------------------------------------------------------
+
+# Uncomment to manage fonts via chezmoi (removes the fonts/ directory from the repo)
+# [".local/share/fonts/JetBrainsMono"]
+#   type          = "archive"
+#   url           = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.tar.xz"
+#   refreshPeriod = "8760h"
+#   stripComponents = 0
+
+# [".local/share/fonts/FiraCode"]
+#   type          = "archive"
+#   url           = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.tar.xz"
+#   refreshPeriod = "8760h"
+#   stripComponents = 0

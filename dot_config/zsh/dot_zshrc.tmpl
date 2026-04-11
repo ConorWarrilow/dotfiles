@@ -1,0 +1,160 @@
+PROMPT_EOL_MARK=""
+export XDG_CONFIG_HOME="$HOME/.config"
+
+# -------------------------------------------------------------------
+# PATH
+# -------------------------------------------------------------------
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin/fzm_scripts:$PATH"
+
+{{- if not .isTermux }}
+# Cargo / Rust
+export CARGO_HOME="$HOME/.cargo"
+export RUSTUP_HOME="$HOME/.rustup"
+export PATH="$CARGO_HOME/bin:$PATH"
+{{- end }}
+
+# rbenv (if installed)
+if [ -d "$HOME/.rbenv" ]; then
+    export PATH="$HOME/.rbenv/bin:$PATH"
+    eval "$(rbenv init -)"
+fi
+
+# -------------------------------------------------------------------
+# Oh My Zsh
+# -------------------------------------------------------------------
+export ZSH="$XDG_CONFIG_HOME/.oh-my-zsh"
+export ZSH_CUSTOM="$XDG_CONFIG_HOME/zsh/custom"
+
+ZSH_THEME="cw"
+
+plugins=(git
+    zsh-syntax-highlighting
+    zsh-autosuggestions
+    zsh-bat)
+
+source "$ZSH/oh-my-zsh.sh"
+
+# -------------------------------------------------------------------
+# Editor
+# -------------------------------------------------------------------
+if command -v nvim >/dev/null 2>&1; then
+    export VISUAL=nvim
+    export EDITOR=nvim
+else
+    export VISUAL=nano
+    export EDITOR=nano
+fi
+
+# -------------------------------------------------------------------
+# Tool settings
+# -------------------------------------------------------------------
+export BAT_THEME="tokyonight_kurenai"
+unset LS_COLORS
+
+# -------------------------------------------------------------------
+# History
+# -------------------------------------------------------------------
+HIST_STAMPS="yyyy-mm-dd"
+export HISTSIZE=100000
+export SAVEHIST=1000000
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# -------------------------------------------------------------------
+# FZF
+# -------------------------------------------------------------------
+{{ if not .isTermux -}}
+source <(fzf --zsh)
+{{ end -}}
+
+export FZF_DEFAULT_OPTS='
+--color=fg:7
+--color=fg+:6
+--color=bg+:-1
+--color=info:6
+--color=prompt:5
+--color=spinner:4
+--color=pointer:5
+--color=header:4
+--color=gutter:-1
+--color=border:6
+--color=separator:6
+--color=scrollbar:6
+--color=preview-border:6
+--color=preview-scrollbar:6
+--border="rounded"
+--border-label=""
+--preview-window="border-rounded"
+--prompt=" "
+--marker=">"
+--pointer="◆"
+--separator="─"
+
+--color=preview-fg:-1
+--color=preview-label:-1
+--color=query:-1
+--color=disabled:-1
+--color=label:7
+--color=marker:-1
+--color=hl+:1
+--color=hl:1'
+
+export FZH_SOURCE="$HOME/.zsh_history"
+export FZM_DIR="$XDG_CONFIG_HOME/fzm"
+
+# -------------------------------------------------------------------
+# NVM (Node Version Manager) — desktop and work only
+# -------------------------------------------------------------------
+{{- if or .isDesktop .isWork }}
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ]             && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ]    && \. "$NVM_DIR/bash_completion"
+{{- end }}
+
+# -------------------------------------------------------------------
+# Conda
+# -------------------------------------------------------------------
+{{- if not .isServer }}
+if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
+    . "$HOME/miniconda3/etc/profile.d/conda.sh"
+elif [ -d "$HOME/miniconda3/bin" ]; then
+    export PATH="$HOME/miniconda3/bin:$PATH"
+fi
+{{- end }}
+
+# -------------------------------------------------------------------
+# Device icon for prompt
+# -------------------------------------------------------------------
+export HOSTNAME="$(hostname)"
+DEVICE_ICON="💻"
+case "$HOSTNAME" in
+    *prodesk*)   DEVICE_ICON="🗄️" ;;
+    *localhost*)  DEVICE_ICON="📱" ;;
+    *BigRig*)    DEVICE_ICON="🖥️" ;;
+    *delltop*)   DEVICE_ICON="💻" ;;
+esac
+export DEVICE_ICON=$DEVICE_ICON
+
+# -------------------------------------------------------------------
+# Source include files
+# -------------------------------------------------------------------
+sources=(
+    'aliases'
+    'functions'
+    'misc'
+    'postgres'
+)
+
+{{- if .isWork }}
+sources+=('work')
+{{- end }}
+
+for s in "${sources[@]}"; do
+    [[ -f "$HOME/.config/zsh/include/$s.zsh" ]] && source "$HOME/.config/zsh/include/$s.zsh"
+done
+
+# -------------------------------------------------------------------
+# Local overrides (machine-specific, not tracked in dotfiles)
+# -------------------------------------------------------------------
+[[ -f "$HOME/.env" ]]        && source "$HOME/.env"
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"

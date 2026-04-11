@@ -1,0 +1,81 @@
+{
+
+  "Main Guard": {
+    "prefix": "s_main",
+    "body": [
+      "if __name__ == \"__main__\":",
+      "    $0"
+    ],
+    "description": "Main method entry point"
+  },
+  
+  "Class Template": {
+    "prefix": "s_cls",
+    "body": [
+      "class ${1:ClassName}:",
+      "    def __init__(self, ${2:args}):",
+      "        $0"
+    ],
+    "description": "Create a new class"
+  },
+  
+  "Property Getter/Setter": {
+    "prefix": "prop",
+    "body": [
+      "@property",
+      "def ${1:attribute}(self):",
+      "    return self._$1",
+      "",
+      "@$1.setter",
+      "def $1(self, value):",
+      "    self._$1 = value"
+    ],
+    "description": "Define a property with getter and setter"
+  },
+  
+  "Timer Context Manager": {
+    "prefix": "timer",
+    "body": [
+      "import time",
+      "from contextlib import contextmanager",
+      "",
+      "@contextmanager",
+      "def timer():",
+      "    start = time.time()",
+      "    yield",
+      "    print(f\"Elapsed: {time.time() - start:.2f}s\")",
+      "    #this is so cool"
+    ],
+    "description": "Simple timing context manager"
+  },
+
+  "Abstract Base Class": {
+    "prefix": "s_abc",
+    "body": [
+      "from abc import ABC, abstractmethod",
+      "",
+      "class ${1:BaseClass}(ABC):",
+      "    @abstractmethod",
+      "    def ${2:method_name}(self):",
+      "        pass"
+    ],
+    "description": "Define an abstract base class with an abstract method"
+  },
+
+  "class with init and methods": {
+    "prefix": "s_class",
+    "body": [
+      "class ${1:ClassName}:",
+      "    def __init__(self, ${2:arg1, arg2}):",
+      "        ${2/(\\w+)/self.$1 = $1\\n        /g}",
+      "",
+      "    def ${3:method_one}(self):",
+      "        pass",
+      "",
+      "    def ${4:method_two}(self):",
+      "        pass",
+      ""
+    ],
+    "description": "Python class with __init__ auto-filling self.args and two method stubs"
+  }
+}

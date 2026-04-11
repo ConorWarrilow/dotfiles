@@ -1,0 +1,19 @@
+# Chezmoi-managed secrets are never committed
+# (chezmoi handles encryption/secrets backends)
+.env
+*.secret
+
+# Zsh cache — generated per machine
+dot_config/zsh/.zcompdump*
+dot_config/zsh/dot_zsh_history
+
+# Neovim generated files
+dot_config/nvim/lazy-lock.json
+dot_config/nvim/doc/tags
+dot_config/nvim/.repro
+
+# btop runtime files
+dot_config/btop/btop.log
+
+# OS cruft
+.DS_Store

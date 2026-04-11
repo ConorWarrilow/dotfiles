@@ -1,0 +1,23 @@
+[init]
+	defaultBranch = main
+[user]
+	email = {{ .email }}
+	name  = {{ .name }}
+
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+
+[credential]
+	helper = store
+
+[core]
+	excludesFile = {{ .chezmoi.homeDir }}/.gitignore_global
+
+{{- if .isWork }}
+# Work-profile: sign commits and use work remote
+[commit]
+	gpgsign = false
+# Uncomment and fill in your work GitHub org if needed:
+# [url "git@github.com:your-work-org/"]
+#     insteadOf = https://github.com/your-work-org/
+{{- end }}

@@ -1,0 +1,44 @@
+# ~/.zshenv — loaded by every zsh invocation before anything else.
+# Keep this minimal: set ZDOTDIR so zsh finds .zshrc in the right place.
+
+export ZDOTDIR=$HOME/.config/zsh
+export XDG_CONFIG_HOME=$HOME/.config
+
+{{- if .isTermux }}
+# Termux: prepend Termux bin to PATH so system tools override Android's
+export PATH="/data/data/com.termux/files/usr/bin:$HOME/.local/bin:$PATH"
+{{- else }}
+export PATH="$HOME/.local/bin:$PATH"
+{{- end }}
+
+export FZF_DEFAULT_OPTS='
+--color=fg:7
+--color=fg+:6
+--color=bg+:-1
+--color=info:6
+--color=prompt:5
+--color=spinner:4
+--color=pointer:5
+--color=header:4
+--color=gutter:-1
+--color=border:6
+--color=separator:6
+--color=scrollbar:6
+--color=preview-border:6
+--color=preview-scrollbar:6
+--border="rounded"
+--border-label=""
+--preview-window="border-rounded"
+--prompt=" "
+--marker=">"
+--pointer="◆"
+--separator="─"
+
+--color=preview-fg:-1
+--color=preview-label:-1
+--color=query:-1
+--color=disabled:-1
+--color=label:-1
+--color=marker:-1
+--color=hl+:1
+--color=hl:1'

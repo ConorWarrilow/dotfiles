@@ -1,0 +1,39 @@
+{{- /* ~/.env — sourced by .zshrc for local secrets.
+       On machines with AWS credentials configured, values come from
+       AWS Secrets Manager. On Termux or offline machines, prompted
+       values are stored locally in ~/.config/chezmoi/chezmoi.toml
+       and never committed. */ -}}
+
+{{- /*
+  Use AWS Secrets Manager only when:
+    1. Not Termux (no AWS CLI on Android), AND
+    2. AWS credentials are present in the environment
+       (AWS_ACCESS_KEY_ID covers both explicit keys and assumed roles via
+       instance profiles/SSO which populate the env at shell start).
+  Fallback in all other cases: prompt once and store locally.
+*/ -}}
+{{- $awsAvailable := and (not .isTermux) (ne (env "AWS_ACCESS_KEY_ID") "") -}}
+
+# -------------------------------------------------------------------
+# GitHub
+# -------------------------------------------------------------------
+{{- if $awsAvailable }}
+{{- $secrets := (awsSecretsManager "dotfiles/env" | fromJson) }}
+export GITHUB_TOKEN="{{ $secrets.GITHUB_TOKEN }}"
+{{- if $secrets.OPENAI_API_KEY }}
+export OPENAI_API_KEY="{{ $secrets.OPENAI_API_KEY }}"
+{{- end }}
+{{- if $secrets.ANTHROPIC_API_KEY }}
+export ANTHROPIC_API_KEY="{{ $secrets.ANTHROPIC_API_KEY }}"
+{{- end }}
+{{- else }}
+# AWS not configured — token was captured during `chezmoi init` and
+# stored in ~/.config/chezmoi/chezmoi.toml (never committed to the repo).
+export GITHUB_TOKEN="{{ .github_token }}"
+{{- end }}
+
+# -------------------------------------------------------------------
+# AWS
+# -------------------------------------------------------------------
+# export AWS_PROFILE="default"
+# export AWS_DEFAULT_REGION="us-east-1"

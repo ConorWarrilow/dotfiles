@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+ff() {
+    local orig_dir="$PWD"
+    local file
+    #cd ~ &&
+    file=$(fzf --height=40% --preview='batcat --style=numbers --color=always --line-range :500 {}' --preview-window=right:60%) &&
+    "${EDITOR:-nvim}" "$file"
+    cd "$orig_dir"
+}
+
+ff
+
+

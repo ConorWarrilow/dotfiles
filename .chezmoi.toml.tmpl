@@ -1,0 +1,27 @@
+{{- $profile := promptChoiceOnce . "profile" "Machine profile" (list "desktop" "server" "work" "termux") -}}
+{{- $name    := promptStringOnce . "name"  "Git user name" -}}
+{{- $email   := "" -}}
+{{- if eq $profile "work" -}}
+{{-   $email = promptStringOnce . "email" "Work git email" -}}
+{{- else -}}
+{{-   $email = promptStringOnce . "email" "Git email" -}}
+{{- end -}}
+{{- /* github_token: prompted once here, stored in config, referenced as .github_token in templates */ -}}
+{{- $githubToken := promptStringOnce . "github_token" "GitHub personal access token (stored locally, never committed)" -}}
+
+[data]
+  profile      = {{ $profile | quote }}
+  name         = {{ $name | quote }}
+  email        = {{ $email | quote }}
+  github_token = {{ $githubToken | quote }}
+
+  isDesktop = {{ eq $profile "desktop" }}
+  isServer  = {{ eq $profile "server" }}
+  isWork    = {{ eq $profile "work" }}
+  isTermux  = {{ eq $profile "termux" }}
+
+# Secrets backend: AWS Secrets Manager
+# Requires AWS credentials configured (aws configure or IAM role)
+# Reference secrets in templates with: {{ (awsSecretsManager "dotfiles/env" | fromJson).KEY }}
+[awsSecretsManager]
+  region = "us-east-1"

@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+#
+# ff() {
+#     local orig_dir="$PWD"
+#     local file
+#     cd ~ &&
+#     file=$(fzf --height=40% --preview='batcat --style=numbers --color=always --line-range :500 {}' --preview-window=right:60%) &&
+#     "${EDITOR:-nvim}" "$file"
+#     cd "$orig_dir"
+# }
+#
+# ff
+#
+#!/usr/bin/env bash
+#
+# ff() {
+#     #cd ~ || return
+#
+#     fzf \
+    #         --height=40% \
+    #         --preview='batcat --style=numbers --color=always --line-range :500 {}' \
+    #         --preview-window=right:60% \
+    #         --bind "enter:execute(${EDITOR:-nvim} {} > /dev/tty </dev/tty)+reload(fdfind --type f)" \
+    #         --ansi
+# }
+#
+# ff
+#
+#
+set -ex
+# ff() {
+#
+#     fd --type file |
+#       fzf --prompt 'Files> ' \
+    #           --header 'CTRL-T: Switch between Files/Directories' \
+    #           --bind 'ctrl-t:transform:[[ ! $FZF_PROMPT =~ Files ]] &&
+#                   echo "change-prompt(Files> )+reload(fd --type file)" ||
+#                   echo "change-prompt(Directories> )+reload(fdfind --type directory)"' \
+    #           --preview '[[ $FZF_PROMPT =~ Files ]] && bat --color=always {} || tree -C {}'
+# }
+# ff
+#
+#!/bin/bash
+#
+# ff() {
+#     orig_dir="$PWD"
+#     local initial_filter="${1:-}"
+#     local HEADER="ctrl-a=all  ctrl-h=hidden  ctrl-d=dirs-only"
+#
+#     fzf --phony \
+    #         --prompt='File: ' \
+    #         --ansi \
+    #         --border-label "[ File Search ]" \
+    #         --header-label "[ Settings ]" \
+    #         --preview-label "[ Preview ]" \
+    #         --header-border \
+    #         --preview '
+#         FILE={1}
+#         if [[ -f "$FILE" ]]; then
+#             batcat --style=numbers --color=always --line-range=1:50 "$FILE" 2>/dev/null || cat "$FILE" 2>/dev/null || echo "Cannot preview file"
+#         elif [[ -d "$FILE" ]]; then
+#             ls -la "$FILE" 2>/dev/null || echo "Cannot list directory"
+#         else
+#             echo "File not found"
+#         fi
+#     ' \
+    #         --bind "change:reload:sleep 0.1; find . -type f -iname '*{q}*' 2>/dev/null | head -1000 || true" \
+    #         --bind 'enter:execute(nvim {1})' \
+    #         --bind "ctrl-a:reload:find . -type f -iname '*{q}*' 2>/dev/null | head -1000 || true" \
+    #         --bind "ctrl-h:reload:find . -name '.*' -type f -iname '*{q}*' 2>/dev/null | head -1000 || true" \
+    #         --bind "ctrl-d:reload:find . -type d -iname '*{q}*' 2>/dev/null | head -1000 || true" \
+    #         --header="$HEADER" \
+    #         --height=100% \
+    #         --preview-window=right:60% \
+    #         --query="$initial_filter" \
+    #         --disabled \
+    #         --bind "start:reload:find . -type f -iname '*$initial_filter*' 2>/dev/null | head -1000 || true"
+# }
+#
+# ff "$@"
+# #
+# fzf_edit() {
+#     fzf --height=40% \
+#         --preview='batcat --style=numbers --color=always --line-range :500 {}' \
+#         --preview-window=right:60% \
+#         --bind 'enter:execute(${EDITOR:-nvim} {})'
+# }
+# fzf_edit
+#
+
+ff(){
+    fdfind --type f \
+        --exclude '.git' \
+        --exclude 'node_modules' \
+        --exclude '.vscode' \
+        --exclude 'build' \
+        --exclude 'dist' \
+        --exclude '__pycache__' \
+        --exclude '.cache' \
+        --exclude '*.o' \
+        --exclude '*.so' \
+        --exclude '*.a' \
+        --exclude '*.exe' \
+        --exclude '*.dll' \
+        --exclude '.conda' \
+        --exclude 'miniconda3' \
+        --exclude '*.jpg' \
+        --exclude 'snap' \
+        --exclude '*.bin' \
+        --exclude '*.class' \
+        --exclude '*.jar' \
+        --exclude '*.pyc' \
+        --exclude '*.pyo' \
+        --exclude '*.log' \
+        --exclude '*.tmp' \
+        --exclude '.DS_Store' \
+        --exclude 'Thumbs.db' \
+        --exclude node_modules --exclude build --exclude dist \
+        | fzf --height=100% \
+            --preview='batcat --style=numbers --color=always --line-range :500 {} 2>/dev/null || file {} || echo "Cannot preview"' \
+            --preview-window=right:60% \
+            --bind 'enter:execute(${EDITOR:-nvim} {})'
+}
+
+ff

@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+
+
+FZH_STATE_DIR="$HOME/.local/state/fzh"
+mkdir -p "$FZH_STATE_DIR"
+
+check_fzh_source_variable() {
+    raw_history_source=$1
+    if [ "$raw_history_source" = "" ]; then
+        # echo "FZH_SOURCE is not defined"
+        exit 0
+    fi
+    if [ ! -f "$raw_history_source" ]; then
+        # echo "history source doesn't exist"
+        # echo "source provided: ${raw_history_source}"
+        exit 0
+    fi
+}
+
+check_previous_source_file_length() {
+    raw_history_source=$1
+    raw_history_source_filename=$(basename "$raw_history_source")
+    #    echo "Raw source filename: ${raw_history_source_filename}"
+
+    local historic_length_filepath="$FZH_STATE_DIR/${raw_history_source_filename}_len.txt"
+    if [ ! -f "$historic_length_filepath" ]; then
+        #        echo "No file found at ${historic_length_filepath}"
+        previous_line_count=0
+        echo "0" > "$historic_length_filepath"
+        #        echo "no file"
+    else
+        previous_line_count="$(cat "$historic_length_filepath")"
+        #        echo "prev count: '$previous_line_count'"
+    fi
+}
+
+check_current_source_file_length() {
+    raw_history_source=$1
+    current_line_count=$(wc -l <"$raw_history_source")
+    echo "$current_line_count" > "$FZH_STATE_DIR/${raw_history_source_filename}_len.txt"
+}
+
+transform_raw_history_file() {
+    transformed_history_filename="${raw_history_source_filename}_transformed"
+    transformed_history_filepath="$FZH_STATE_DIR/$transformed_history_filename"
+    starting_line=$((previous_line_count + 1))
+    CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    tmux run-shell -b "$CURRENT_DIR/fzh_history_generator.sh ${raw_history_source} ${transformed_history_filepath} ${starting_line}"
+}
+
+fzh_menu() {
+    initial_filter="${*:-}"
+
+    local history_file="$HOME/.local/state/fzh/.zsh_history_transformed"
+    local total_lines
+    total_lines=$(wc -l <"$history_file")
+    HEADER="header placeholder"
+
+    # Remove unused RELOAD variable or use it if needed
+    #RELOAD='reload:rg --color=always --smart-case {q} || :'
+    # ENTER_EXECUTOR="var='something'
+    #                 echo '$var'"
+    T_EXECUTOR="echo 'pressed ctrl-t' && echo '$FZF_ACTION'"
+    B_EXECUTOR="echo '$FZF_PROMPT'"
+
+    CAT_TO_CLIPBOARD='echo {2} > /tmp/fzf_clipboard'
+    ECHO_FROM_CLIPBOARD='cat /tmp/fzf_clipboard'
+    #FZF_ACTION
+    #
+    output=$(
+        tac "$history_file" |
+            awk -F ';' '{
+            if ($0 ~ /^:/) {
+            raw_cmd = substr($0, index($0, ";")+1)
+            clean_cmd = raw_cmd
+            gsub(/\\n/, "", clean_cmd)
+            gsub(/  +/, " ", clean_cmd)   # <-- replace 2+ spaces with single space
+            if (!seen[raw_cmd]++) {
+                print NR "\t" raw_cmd "\t" clean_cmd
+            }
+        }
+    }' | rg --color=always --colors 'match:fg:4' -- "$initial_filter" |
+            fzf --ansi --with-nth=3 --delimiter='\t' \
+                --header="$HEADER" \
+                --bind 'ctrl-/:toggle-preview' \
+                --bind "ctrl-t:execute:$T_EXECUTOR" \
+                --bind "ctrl-b:execute:echo " \
+                --bind 'ctrl-y:execute(env | grep "^FZF_" | sort)' \
+                --bind 'enter:execute(nvim +{2} {1})' \
+                --bind "ctrl-f:execute:echo {1} {2} {} > /tmp/fzf_test_output" \
+                --bind "ctrl-h:execute-silent:bash -c 'echo {2} > /tmp/fzf_clipboard'" \
+                --bind "ctrl-q:execute:bash -c 'echo Copied: \$(cat /tmp/fzf_clipboard)'" \
+                --bind "ctrl-e:execute:bash -c 'echo Ctrl-B full line: {}'" \
+                --bind "ctrl-u:execute:$CAT_TO_CLIPBOARD" \
+                --bind "ctrl-i:execute:$ECHO_FROM_CLIPBOARD" \
+                --bind "ctrl-o:reload: echo header 2;" \
+                --preview " \
+            line_num={1}
+            cmd={2}
+            clean_line_num=\$(echo \"\$line_num\" | sed 's/[^0-9]//g')
+            # Calculate the correct line number in the original file
+            original_line_num=\$((${total_lines} - \$clean_line_num + 1))
+            raw_line=\$(sed -n \"\${original_line_num}p\" \"${history_file}\" 2>>/tmp/fzh_debug.log || echo \"\")
+            if [[ \$raw_line =~ ^:\ ([0-9]+):([0-9]+)\;(.*)\$ ]]; then
+                timestamp=\"\${match[1]}\"
+                duration=\"\${match[2]}\"
+                if command -v date >/dev/null 2>&1; then
+                    human_time=\$(date -d \"@\$timestamp\" 2>>/tmp/fzh_debug.log || date -r \"\$timestamp\" 2>>/tmp/fzh_debug.log || echo \"Unknown\")
+                else
+                    human_time=\"Timestamp: \$timestamp\"
+                fi
+                echo -e \"\033[1;36m=== Command Metadata ===\033[0m\"
+                echo -e \"\033[1;33mTimestamp:\033[0m \$human_time\"
+                echo -e \"\033[1;33mHistory Line:\033[0m \$original_line_num\"
+                echo -e \"\033[1;36m========================\033[0m\"
+            else
+                echo \"DEBUG: Regex did not match\" >> /tmp/fzh_debug.log
+                echo -e \"\033[1;36m=== Command Info ===\033[0m\"
+                echo -e \"\033[1;33mHistory Line:\033[0m \$original_line_num\"
+                echo -e \"\033[1;33mNo metadata available\033[0m\"
+                echo -e \"\033[1;36m===================\033[0m\"
+            fi
+            echo -e \"\$cmd\" | sed 's/\\\\n/\\\\\\n/g' | batcat --color=always --language=bash --style=plain" |
+            cut -f2 | sed 's/ *$//'
+    )
+    #echo "$PATH"
+}
+
+
+
+main() {
+    raw_history_source="/home/conor/.zsh_history"
+    check_fzh_source_variable "$raw_history_source"
+    check_previous_source_file_length "$raw_history_source"
+    check_current_source_file_length "$raw_history_source"
+    transform_raw_history_file
+    fzh_menu "$@"
+}
+
+main "$@"

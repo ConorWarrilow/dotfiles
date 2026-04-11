@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+FZM_DIR="$HOME/dots/code/fzm_scripts"
+echo "$FZM_DIR"
+run_fzm() {
+    #FZM_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    local current_dir
+    current_dir="$PWD"
+    echo "current dir: $current_dir"
+
+    local running=true
+    local command_array=()
+    while [ "$running" = true ]; do
+        #args="ff\nfcd\nfzg\nfzh_bato6e3\ncoolcommands\nfzgggg\nfzhhh\ndocs\nhist"
+
+        files="$(
+            find "$FZM_DIR" -type f -not -name ".*" -exec bash -c '
+            for f; do
+              name=$(basename "$f")
+              [[ "$name" != *.* ]] && echo "$name"
+            done
+            ' _ {} +
+        )"
+        echo "files: $files"
+        selection=$(echo -e "$files" | fzf --border-label "[ $current_dir ]" --preview 'which {}')
+        echo "selection: $selection"
+        echo "user performed an action: ${selection}" >>/tmp/fuzm_debug.log
+        if [[ -z "$selection" ]]; then
+            # User pressed escape - go back or exit
+            echo "User pressed escape" >>/tmp/fuzm_debug.log
+            prev_command="${command_array[-1]}"
+            echo "previous command: ${prev_command}" >>/tmp/fuzm_debug.log
+            if [[ "$prev_command" == "" ]]; then
+                echo "should be exiting" >>/tmp/fuzm_debug.log
+                running=false
+            else
+                #echo "wasn't an empty string, unsetting command '${prev_command}'" >>/tmp/fuzm_debug.log
+                #unset 'command_array[-1]'
+                "$prev_command"
+            fi
+        else
+            command_array+=("$selection")
+
+            #"$CURRENT_DIR/${selection}.sh"
+            "$selection"
+            echo "user apparently finished" >>/tmp/fuzm_debug.log
+            unset 'command_array[-1]'
+        fi
+    done
+}
+
+run_fzm
+# this script should pass some sort of global logic to child fzf processes e.g. certain keybindings could still remain the same. maybe change directory using ctrl+h/l

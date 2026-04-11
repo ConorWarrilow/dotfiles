@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+DESCRIPTION="This is the description"
+
+fzg() {
+
+    orig_dir="$PWD"
+    local initial_filter="${1:-}"
+
+    local HEADER="ctrl-d=dots  ctrl-t=text  ctrl-d=dirs"
+
+    #cd ~
+
+    fzf --phony \
+        --prompt='Search: ' \
+        --ansi \
+        --border-label "[ yoyo2 ]" \
+        --header-label "[ Settings ]" \
+        --preview-label "[ Preview ]" \
+        --header-border \
+        --delimiter ':' \
+        --preview 'batcat --style=numbers --color=always --highlight-line={2} {1} || echo "No match."
+    ' \
+        --bind "change:reload:sleep 0.1; rg --hidden --color=always --no-heading --line-number --ignore-case {q} || true" \
+        --bind 'enter:execute(nvim +{2} {1})' \
+        --bind "ctrl-d:reload:rg --color=always --no-heading --line-number --ignore-case {q} || true" \
+        --header="$HEADER" \
+        --height=100% \
+        --preview-window 'top:60%,+{2}+3/3,~3' \
+        --query="$initial_filter" \
+        --disabled \
+        --bind "start:reload:rg --hidden --color=always --no-heading --line-number --ignore-case '$initial_filter' || true"
+
+    #cd "$orig_dir"
+
+}
+fzg "$@"
+
+#
+# +{2}+3/3	This is a scroll offset / position expression:
+# - +{2} means scroll so that the line number in the second field of the current selection is at the top of the preview.
+# - +3/3 means add 3 lines to that position, and also divide the scroll offset by 3 (for fractional scrolling).
+# ~3	Keep a margin of 3 lines at the top and bottom of the preview window when scrolling to the target line.

@@ -1,0 +1,39 @@
+# -------------------------------------------------------------------
+# Static data available to all templates as .theme.*
+# Update colors here to propagate changes to every tool config.
+# -------------------------------------------------------------------
+
+[theme]
+  name = "tokyo-kurenai"
+
+  # Base
+  bg  = "#1a1b26"
+  fg  = "#c0caf5"
+
+  # Grays
+  gray1  = "#283457"  # bg_visual
+  gray2  = "#414868"  # terminal_black
+  gray3  = "#565f89"  # comment
+  cream1 = "#c6c6c6"
+
+  # Reds / Orange
+  red1   = "#f7768e"
+  red2   = "#db4b4b"
+  orange = "#ff9e64"
+  yellow = "#e0af68"
+
+  # Greens
+  green2 = "#1abc9c"  # teal
+  green3 = "#73daca"
+
+  # Blues / Cyan
+  blue1  = "#b4f9f8"
+  blue2  = "#41a6b5"
+  blue3  = "#0db9d7"
+  blue4  = "#89ddff"
+  blue5  = "#7dcfff"  # cyan
+  blue6  = "#7aa2f7"  # blue
+
+  # Purples
+  purple1 = "#9d7cd8"
+  purple2 = "#bb9af7"

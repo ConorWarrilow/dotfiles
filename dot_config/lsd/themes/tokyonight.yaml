@@ -1,0 +1,38 @@
+user: 7
+group: 7
+permission:
+  read: 6
+  write: 4
+  exec: 5
+  exec-sticky: 2
+  no-access: 8 # just the hyphens
+  octal: 3
+  acl: 10
+  context: 1
+date:
+  hour-old: 6
+  day-old: 5
+  older: 7
+size:
+  none: 7
+  small: 2
+  medium: 3
+  large: 1
+inode:
+  valid: 20 # leave wrong so it stands out
+  invalid: 20 # leave wrong so it stands out
+links:
+  valid: 7
+  invalid: 1
+tree-edge: 4
+git-status:
+  default: 245
+  unmodified: 5
+  ignored: 8
+  new-in-index: dark_green
+  new-in-workdir: dark_green
+  typechange: dark_yellow
+  deleted: dark_red
+  renamed: dark_green
+  modified: dark_yellow
+  conflicted: dark_red

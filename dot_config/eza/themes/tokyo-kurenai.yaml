@@ -1,0 +1,113 @@
+colourful: true
+filekinds:
+  normal: { foreground: "#c0caf5" }        # White
+  directory: { foreground: "#7aa2f7" }     # Pastel Blue
+  symlink: { foreground: "#7dcfff" }       # Cyan
+  pipe: { foreground: "#414868" }          # Black
+  block_device: { foreground: "#e0af68" }  # Yellow
+  char_device: { foreground: "#e0af68" }   # Yellow
+  socket: { foreground: "#414868" }        # Black
+  special: { foreground: "#bb9af7" }       # Purple
+  executable: { foreground: "#73daca" }    # Bermuda Green
+  mount_point: { foreground: "#7dcfff" }   # Cyan
+perms:
+  user_read: { foreground: "#7aa2f7" }           # Cyan
+  user_write: { foreground: "#7dcfff" }          # Purple
+  user_execute_file: { foreground: "#bb9af7" }   # Bermuda Green
+  user_execute_other: { foreground: "#bb9af7" }  # Bermuda Green
+  group_read: { foreground: "#7aa2f7" }          # Cyan
+  group_write: { foreground: "#7dcfff" }         # Pastel Orange
+  group_execute: { foreground: "#e0af68" }       # Bermuda Green
+  other_read: { foreground: "#7aa2f7" }          # Cyan
+  other_write: { foreground: "#7dcfff" }         # Pastel Pink
+  other_execute: { foreground: "#f7768e" }       # Bermuda Green
+  special_user_file: { foreground: "#f7768e" }   # Pastel Pink
+  special_other: { foreground: "#f7768e" }       # Pastel Pink
+  attribute: { foreground: "#414868" }           # Black
+size:
+  major: { foreground: "#7dcfff" }         # Cyan
+  minor: { foreground: "#bb9af7" }         # Purple
+  number_byte: { foreground: "#c0caf5" }   # White
+  number_kilo: { foreground: "#7dcfff" }   # Cyan
+  number_mega: { foreground: "#e0af68" }   # Pastel Blue
+  number_giga: { foreground: "#ff9e64" }   # Pastel Orange
+  number_huge: { foreground: "#f7768e" }   # Pastel Pink
+  unit_byte: { foreground: "#c0caf5" }     # White
+  unit_kilo: { foreground: "#7dcfff" }     # Cyan
+  unit_mega: { foreground: "#e0af68" }     # Pastel Blue
+  unit_giga: { foreground: "#ff9e64" }     # Pastel Orange
+  unit_huge: { foreground: "#f7768e" }     # Pastel Pink
+users:
+  user_you: { foreground: "#7aa2f7" }      # Pastel Blue
+  user_root: { foreground: "#bb9af7" }     # Purple
+  user_other: { foreground: "#7dcfff" }    # Cyan
+  group_yours: { foreground: "#7dcfff" }   # Cyan
+  group_root: { foreground: "#bb9af7" }    # Purple
+  group_other: { foreground: "#c0caf5" }   # White
+links:
+  normal: { foreground: "#c6c6c6" }        # Cyan
+  multi_link_file: { foreground: "#7aa2f7" } # Pastel Blue
+git:
+  new: { foreground: "#73daca" }           # Bermuda Green
+  modified: { foreground: "#bb9af7" }      # Purple
+  deleted: { foreground: "#f7768e" }       # Pastel Pink
+  renamed: { foreground: "#7dcfff" }       # Cyan
+  typechange: { foreground: "#7dcfff" }    # Cyan
+  ignored: { foreground: "#414868" }       # Black
+  conflicted: { foreground: "#ff9e64" }    # Pastel Orange
+git_repo:
+  branch_main: { foreground: "#c6c6c6" }   # Black
+  branch_other: { foreground: "#7dcfff" }  # Cyan
+  git_clean: { foreground: "#414868" }     # Black
+  git_dirty: { foreground: "#bb9af7" }     # Purple
+security_context:
+  colon: { foreground: "#414868" }         # Black
+  user: { foreground: "#414868" }          # Black
+  role: { foreground: "#7dcfff" }          # Cyan
+  typ: { foreground: "#7aa2f7" }           # Pastel Blue
+  range: { foreground: "#bb9af7" }         # Purple
+file_type:
+  image: { foreground: "#7dcfff" }         # Cyan
+  video: { foreground: "#7aa2f7" }         # Pastel Blue
+  music: { foreground: "#73daca" }         # Bermuda Green
+  lossless: { foreground: "#73daca" }      # Bermuda Green
+  crypto: { foreground: "#f7768e" }        # Pastel Pink
+  document: { foreground: "#c0caf5" }      # White
+  compressed: { foreground: "#ff9e64" }    # Pastel Orange
+  temp: { foreground: "#414868" }          # Black
+  compiled: { foreground: "#414868" }      # Black
+  build: { foreground: "#73daca" }         # Bermuda Green
+  source: { foreground: "#bb9af7" }        # Purple
+punctuation: { foreground: "#414868" }     # Black
+date: { foreground: "#c6c6c6" }            # Yellow
+inode: { foreground: "#414868" }           # Black
+blocks: { foreground: "#414868" }          # Black
+header: { foreground: "#c0caf5" }          # White
+octal: { foreground: "#ff9e64" }           # Pastel Orange
+flags: { foreground: "#bb9af7" }           # Purple
+symlink_path: { foreground: "#7dcfff" }    # Cyan
+control_char: { foreground: "#ff9e64" }    # Pastel Orange
+broken_symlink: { foreground: "#f7768e" }  # Pastel Pink
+broken_path_overlay: { foreground: "#f7768e" } # Pastel Pink
+extensions:
+  md:
+    filename:
+      foreground: "#7aa2f7"               # Pastel Blue (fixed typo from "foregroupd")
+    icon:
+      glyph: 📘
+      foreground: "#7aa2f7"               # Pastel Blue
+  rs: {filename: {foreground: Red}, icon: {glyph: 🦀}}
+  # Change the icon glyph and color
+  nix: {icon: {glyph: ❄, style: {foreground: White}}}
+filenames:
+  pyproject.toml:
+    icon:
+      glyph: 
+      style:
+        foreground: "#e0af68" 
+    filename:
+      foreground: "#e0af68"
+  Cargo.toml: {icon: {glyph: 🦀}}
+  Cargo.lock: {icon: {glyph: 🦀}}
+
+

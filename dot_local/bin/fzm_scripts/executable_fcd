@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+fcd() {
+    local dir
+    cd && dir=$(fd --type d --hidden --follow --exclude .git . 2>/dev/null | fzf --height=40%) && cd "$dir"
+}
+fcd

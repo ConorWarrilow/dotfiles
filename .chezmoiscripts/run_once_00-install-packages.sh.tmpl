@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# Install base system packages.
+# This script runs once (hash-tracked). To force a re-run:
+#   chezmoi state delete-bucket --bucket=scriptState
+set -euo pipefail
+
+info()    { printf '\033[1;34m[i] %s\033[0m\n' "$*"; }
+success() { printf '\033[1;32m[✓] %s\033[0m\n' "$*"; }
+
+{{ if .isTermux -}}
+# ---------------------------------------------------------------
+# Termux (Android)
+# ---------------------------------------------------------------
+info "Updating Termux packages..."
+pkg update -y && pkg upgrade -y
+
+info "Installing Termux base packages..."
+pkg install -y \
+  git \
+  zsh \
+  tmux \
+  neovim \
+  fzf \
+  bat \
+  eza \
+  curl \
+  wget \
+  openssh \
+  gh \
+  python \
+  nodejs-lts
+
+success "Termux packages installed!"
+
+{{ else if eq .chezmoi.os "linux" -}}
+# ---------------------------------------------------------------
+# Ubuntu / Debian
+# ---------------------------------------------------------------
+info "Updating apt..."
+sudo apt-get update -qq
+
+info "Installing base packages..."
+sudo apt-get install -y \
+  curl \
+  git \
+  build-essential \
+  unzip \
+  zip \
+  tmux \
+  zsh \
+  bat \
+  lsd \
+  btop \
+  libfuse2 \
+  libevent-dev \
+  xclip \
+  ripgrep \
+  fd-find \
+  jq \
+  tree \
+  wget
+
+{{ if .isDesktop -}}
+info "Installing desktop packages..."
+sudo apt-get install -y \
+  mesa-utils \
+  xdg-utils \
+  fuse
+{{ end -}}
+
+{{ if or .isServer .isWork -}}
+info "Installing server/work packages..."
+sudo apt-get install -y \
+  htop \
+  iotop \
+  net-tools \
+  nmap
+{{ end -}}
+
+# Install GitHub CLI
+if ! command -v gh &>/dev/null; then
+  info "Installing GitHub CLI..."
+  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+  sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+    | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+  sudo apt-get update -qq
+  sudo apt-get install -y gh
+  success "GitHub CLI installed"
+fi
+
+success "Base packages installed!"
+{{ end -}}

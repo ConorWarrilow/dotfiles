@@ -1,0 +1,117 @@
+# ~/.config/tmuxinator/dev-environment.yml
+name: dev-environment
+root: ~/projects/forgot
+
+# Environment variables for the session
+env:
+  EDITOR: nvim
+  #TERM: xterm-256color
+
+# Run when the project starts
+on_project_start: echo "Starting development environment for $(basename $PROJECT_NAME)"
+
+# Run when the project exits
+on_project_exit: echo "Saved session state for $(basename $PROJECT_NAME)" > ~/.tmux_session_logs/$(date +%Y%m%d).log
+
+# Configuration before each window
+pre_window: clear && echo "Loading..."
+
+# Custom tmux options
+tmux_options: -f ~/.tmux.conf -2
+
+# Set starting window and pane
+startup_window: code
+startup_pane: 1
+
+# Auto attach to session
+attach: true
+
+windows:
+  - code:
+      layout: main-vertical
+      panes:
+        - editor:
+          # Main editor pane with NeoVim
+          - echo "Starting editor..." && sleep 0.5
+          - nvim
+        - terminal:
+          # Secondary terminal for quick commands
+          - echo "Terminal ready for commands"
+  
+  - file_explorer:
+      layout: even-horizontal
+      panes:
+        - file_tree:
+          # Left pane with nvim and neo-tree plugin
+          - nvim -c "Neotree toggle"
+        - preview:
+          # Right pane with file preview capabilities
+          - echo "Ready for file previews"
+          - nvim -c "Telescope find_files"
+          
+  - git:
+      layout: main-horizontal
+      synchronize: after
+      panes:
+        - git_status:
+          # Git status and branch information
+          - git fetch
+          - git status
+          - git branch -vv
+        - git_log:
+          # Git log visualization
+          - git log --graph --oneline --all --decorate -n 15
+        - git_diff:
+          # Space for viewing diffs
+          - echo "Ready for git diff"
+  
+  - system:
+      layout: tiled
+      panes:
+        - system_monitor:
+          # System monitor using btop
+          - btop
+        - disk_usage:
+          # Disk usage information
+          - df -h
+          - echo "Press Enter to check specific directory..." && read && du -sh * | sort -hr | head -n 20
+        - processes:
+          # Process monitoring
+          - echo "Watching for Python processes..."
+          - watch -n 5 "ps aux | grep python"
+          - htop
+  
+  - conda:
+      layout: even-horizontal
+      panes:
+        - environment:
+          # Conda environment management
+          - conda info
+          - conda env list
+        - packages:
+          # Package management
+          - echo "Ready for conda/pip operations"
+          - echo "Run 'conda list' to see installed packages"
+  
+  - server:
+      layout: main-vertical
+      panes:
+        - app_server:
+          # Main application server
+          - echo "Ready to start server"
+          - echo "Run your server command here"
+        - logs:
+          # Log monitoring
+          - echo "Waiting for logs..."
+          - echo "Run 'tail -f logs/app.log' when ready"
+  
+  - scratch:
+      layout: even-horizontal
+      panes:
+        - notes:
+          # Quick notes and todos
+          - echo "# Notes for $(date '+%Y-%m-%d')" > /tmp/notes_$(date '+%Y%m%d').md
+          - nvim /tmp/notes_$(date '+%Y%m%d').md
+        - scratch:
+          # General purpose terminal
+          - echo "Scratch terminal ready"

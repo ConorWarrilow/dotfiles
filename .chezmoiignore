@@ -1,0 +1,38 @@
+# -------------------------------------------------------------------
+# Profile-conditional exclusions
+# Files listed here are NOT deployed on machines where the condition
+# is true. Chezmoi re-evaluates this on every apply.
+# -------------------------------------------------------------------
+
+# Desktop-only tools (kitty, vscode, obsidian etc.)
+{{ if not .isDesktop -}}
+.config/kitty
+.config/Code
+{{ end -}}
+
+# Termux-only config
+{{ if not .isTermux -}}
+.config/termux
+{{ end -}}
+
+# Server profile: skip GUI and heavy desktop tools
+{{ if .isServer -}}
+.config/kitty
+.config/Code
+{{ end -}}
+
+# -------------------------------------------------------------------
+# Always-excluded generated/transient files
+# -------------------------------------------------------------------
+
+# Neovim lazy.nvim lockfile — regenerated automatically on each nvim start
+.config/nvim/lazy-lock.json
+
+# Zsh completion cache — machine-generated
+.config/zsh/.zcompdump*
+
+# Shell history — never commit history
+.config/zsh/.zsh_history
+
+# btop log
+.config/btop/btop.log

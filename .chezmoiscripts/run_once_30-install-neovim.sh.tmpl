@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Install Neovim from the official GitHub release (AppImage on Linux).
+# Termux uses pkg install neovim instead.
+{{ if .isTermux -}}
+exit 0
+{{- end }}
+set -euo pipefail
+
+info()    { printf '\033[1;34m[i] %s\033[0m\n' "$*"; }
+success() { printf '\033[1;32m[✓] %s\033[0m\n' "$*"; }
+
+NVIM_VERSION="v0.11.2"
+INSTALL_DIR="$HOME/.local/bin"
+
+if command -v nvim &>/dev/null; then
+  success "Neovim already installed: $(nvim --version | head -1)"
+  exit 0
+fi
+
+info "Installing Neovim $NVIM_VERSION..."
+mkdir -p "$INSTALL_DIR"
+
+{{ if eq .chezmoi.os "linux" -}}
+ARCH="$(uname -m)"
+if [[ "$ARCH" == "x86_64" ]]; then
+  BINARY="nvim-linux-x86_64.appimage"
+elif [[ "$ARCH" == "aarch64" ]]; then
+  BINARY="nvim-linux-arm64.appimage"
+else
+  echo "Unsupported architecture: $ARCH" >&2
+  exit 1
+fi
+
+curl -L -o "/tmp/nvim.appimage" \
+  "https://github.com/neovim/neovim/releases/download/$NVIM_VERSION/$BINARY"
+chmod +x /tmp/nvim.appimage
+mv /tmp/nvim.appimage "$INSTALL_DIR/nvim"
+{{ end -}}
+
+success "Neovim installed: $(nvim --version | head -1)"

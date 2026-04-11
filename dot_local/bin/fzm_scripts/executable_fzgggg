@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+fzgt() {
+    orig_dir="$PWD"
+    local initial_filter="${*:-}"
+
+    local HEADER="ctrl-d=dots  ctrl-t=text  ctrl-d=dirs"
+
+    #cd ~
+
+    fzf-tmux -p --phony \
+        --prompt='Search: ' \
+        --ansi \
+        --delimiter ':' \
+        --preview '
+        FILE={1}
+        LINE={2}
+        START=$(( LINE > 20 ? LINE - 10 : 1 ))
+        END=$(( LINE + 10 ))
+        [[ -n "$FILE" && -n "$LINE" ]] && \
+        batcat --style=numbers --color=always --highlight-line="$LINE" --line-range=$START:$END "$FILE" || echo "No match."
+    ' \
+        --bind "change:reload:sleep 0.1; rg --hidden --color=always --no-heading --line-number --ignore-case {q} || true" \
+        --bind 'enter:execute(nvim +{2} {1})' \
+        --bind "ctrl-d:reload:rg --color=always --no-heading --line-number --ignore-case {q} || true" \
+        --header="$HEADER" \
+        --height=100% \
+        --preview-window=top:60% \
+        --query="$initial_filter" \
+        --disabled \
+        --bind "start:reload:rg --hidden --color=always --no-heading --line-number --ignore-case '$initial_filter' || true"
+
+    #cd "$orig_dir"
+
+}
+
+fzgt "$@" 

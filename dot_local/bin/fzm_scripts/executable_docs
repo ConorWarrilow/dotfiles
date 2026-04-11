@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+docs() {
+    (cd "$DOTFILES_DIR/wiki/docs" && fzg)
+}
+docs
