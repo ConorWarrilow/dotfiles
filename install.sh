@@ -3,14 +3,14 @@
 # Bootstrap script for chezmoi dotfiles
 #
 # Run on a fresh machine with:
-#   sh -c "$(curl -fsLS https://raw.githubusercontent.com/conorwarrilow/dots/main/chezmoi_dots/install.sh)"
+#   bash -c "$(curl -fsLS https://raw.githubusercontent.com/conorwarrilow/dotfiles/main/install.sh)"
 #
 # Or if you already have the repo cloned:
-#   bash ~/dots/chezmoi_dots/install.sh
+#   bash ~/dotfiles/install.sh
 # -------------------------------------------------------------------
 set -euo pipefail
 
-CHEZMOI_REPO="git@github.com:conorwarrilow/dotfiles.git"
+CHEZMOI_REPO="https://github.com/ConorWarrilow/dotfiles.git"
 CHEZMOI_SOURCE_PATH="chezmoi_dots"
 
 info()    { printf '\033[1;34m[i] %s\033[0m\n' "$*"; }
