@@ -92,6 +92,9 @@ fi
 
 success "Base packages installed!"
 
+info "Removing unused packages..."
+sudo apt-get autoremove -y -qq
+
 # -------------------------------------------------------------------
 # Docker group (avoids needing sudo for every docker command)
 # -------------------------------------------------------------------

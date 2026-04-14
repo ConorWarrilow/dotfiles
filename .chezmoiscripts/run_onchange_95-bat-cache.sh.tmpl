@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Rebuild bat's theme cache whenever the theme file changes.
+# The comment below embeds a hash of the theme file so chezmoi re-runs
+# this script automatically whenever the theme content is updated.
+# theme hash: {{ include "dot_config/bat/themes/tokyonight_kurenai.tmTheme" | sha256sum }}
+set -euo pipefail
+
+BAT_CMD="bat"
+if command -v batcat &>/dev/null && ! command -v bat &>/dev/null; then
+    BAT_CMD="batcat"
+fi
+
+if command -v "$BAT_CMD" &>/dev/null; then
+    echo "Rebuilding bat theme cache..."
+    "$BAT_CMD" cache --build
+    echo "bat cache rebuilt."
+fi
