@@ -53,6 +53,8 @@ fzh_menu() {
 
     local history_file="$HOME/.local/state/fzh/.zsh_history_transformed"
     local total_lines
+    # ensuring the file exists
+    [ -f "$history_file" ] || touch "$history_file"
     total_lines=$(wc -l <"$history_file")
     HEADER="header placeholder"
 
