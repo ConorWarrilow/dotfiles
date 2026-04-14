@@ -6,10 +6,12 @@
 {{- else -}}
 {{-   $email = promptStringOnce . "email" "Git email" -}}
 {{- end -}}
+{{- $github_token := promptStringOnce . "github_token" "GitHub Personal Access Token (leave blank to authenticate via browser)" -}}
 [data]
   profile      = {{ $profile | quote }}
   name         = {{ $name | quote }}
   email        = {{ $email | quote }}
+  github_token = {{ $github_token | quote }}
 
   isDesktop = {{ eq $profile "desktop" }}
   isServer  = {{ eq $profile "server" }}

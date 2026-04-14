@@ -27,8 +27,8 @@ export OPENAI_API_KEY="{{ $secrets.OPENAI_API_KEY }}"
 export ANTHROPIC_API_KEY="{{ $secrets.ANTHROPIC_API_KEY }}"
 {{- end }}
 {{- else }}
-# AWS not configured — secrets left empty until credentials are set up.
-export GITHUB_TOKEN=""
+# AWS not configured — using PAT from chezmoi init (stored locally, never committed).
+export GITHUB_TOKEN="{{ .github_token }}"
 export OPENAI_API_KEY=""
 export ANTHROPIC_API_KEY=""
 {{- end }}

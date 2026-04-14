@@ -91,4 +91,17 @@ if ! command -v gh &>/dev/null; then
 fi
 
 success "Base packages installed!"
+
+# -------------------------------------------------------------------
+# Docker group (avoids needing sudo for every docker command)
+# -------------------------------------------------------------------
+if command -v docker &>/dev/null; then
+  if ! groups "$USER" | grep -qw docker; then
+    info "Adding $USER to docker group..."
+    sudo usermod -aG docker "$USER"
+    success "Added to docker group (run 'newgrp docker' or log out/in to activate)"
+  else
+    success "User already in docker group"
+  fi
+fi
 {{ end -}}

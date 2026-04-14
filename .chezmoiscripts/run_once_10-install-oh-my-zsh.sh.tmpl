@@ -19,3 +19,22 @@ ZSH="$OMZ_DIR" sh -c \
   "" --unattended --keep-zshrc
 
 success "Oh My Zsh installed!"
+
+# -------------------------------------------------------------------
+# Set zsh as the default shell
+# -------------------------------------------------------------------
+ZSH_PATH="$(command -v zsh 2>/dev/null || true)"
+if [[ -n "$ZSH_PATH" ]]; then
+  # Ensure zsh is listed in /etc/shells
+  if ! grep -qx "$ZSH_PATH" /etc/shells 2>/dev/null; then
+    info "Registering $ZSH_PATH in /etc/shells..."
+    echo "$ZSH_PATH" | sudo tee -a /etc/shells > /dev/null
+  fi
+  if [[ "$SHELL" != "$ZSH_PATH" ]]; then
+    info "Changing default shell to zsh..."
+    sudo chsh -s "$ZSH_PATH" "$USER"
+    success "Default shell set to zsh (takes effect on next login)"
+  else
+    success "Default shell is already zsh"
+  fi
+fi
